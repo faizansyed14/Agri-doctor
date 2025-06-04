@@ -1,6 +1,4 @@
 from fastapi import FastAPI, File, UploadFile
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import numpy as np
@@ -9,22 +7,8 @@ from PIL import Image
 import tensorflow as tf
 from fastapi import APIRouter, HTTPException
 import pyttsx3
-import os
 
 app = FastAPI()
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRONTEND_BUILD_DIR = os.path.join(BASE_DIR, "../frontend/build")
-
-if os.path.exists(FRONTEND_BUILD_DIR):
-    app.mount("/", StaticFiles(directory=FRONTEND_BUILD_DIR, html=True), name="static")
-
-    @app.get("/")
-    async def serve_react_app():
-        return FileResponse(os.path.join(FRONTEND_BUILD_DIR, "index.html"))
-else:
-    print("⚠️ React build directory not found. Did you run `npm run build` in frontend?")
-
 
 origins = [
     "http://localhost",
@@ -38,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MODEL = tf.keras.models.load_model("../models/1")
+MODEL = tf.keras.models.load_model("./models/1")
 
 CLASS_NAMES = ['Algal Tea',
  'Anthracnose Tea',
